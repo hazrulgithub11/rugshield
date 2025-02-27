@@ -11,13 +11,19 @@
 
 import Image, { StaticImageData } from 'next/image'
 import { useState } from 'react'
+import ArrowRight from '@/icons/ArrowRight'
+import { sparkles } from '@/images'
+import PawsLogo from '@/icons/PawsLogo'
+import Wallet from '@/icons/Wallet'
+import Star from '@/icons/Star'
+import Community from '@/icons/Community'
+import TaskTelegram from '@/icons/TaskTelegram'
 
 // Import your task icons
 import TaskWallet from '@/icons/TaskWallet'
 import TaskPaws from '@/icons/TaskPaws'
 import TaskTwitter from '@/icons/TaskTwitter'
 import { taskBlum, taskBoost, taskWhitePaws } from '@/images'
-import TaskTelegram from '@/icons/TaskTelegram'
 import TaskInvite from '@/icons/TaskInvite'
 // Import other task icons...
 
@@ -28,9 +34,40 @@ type Task = {
     isComponent?: boolean;
 }
 
-const TasksTab = () => {
-    const [activeTab, setActiveTab] = useState<'in-game' | 'partners'>('in-game')
+// Toggle switch component
+const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean, onChange: () => void }) => {
+    return (
+        <button 
+            onClick={onChange}
+            className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${enabled ? 'bg-green-500' : 'bg-[#3c3c3c]'}`}
+        >
+            <div 
+                className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${enabled ? 'right-1' : 'left-1'}`}
+            ></div>
+        </button>
+    )
+}
 
+const SettingsTab = () => {
+    // Wallet & Telegram connection states
+    const [walletConnected, setWalletConnected] = useState(false)
+    const [telegramLinked, setTelegramLinked] = useState(false)
+    
+    // Risk preferences states
+    const [autoLockEnabled, setAutoLockEnabled] = useState(true)
+    const [highRiskAlerts, setHighRiskAlerts] = useState(true)
+    const [mediumRiskAlerts, setMediumRiskAlerts] = useState(true)
+    const [lowRiskAlerts, setLowRiskAlerts] = useState(false)
+    
+    // Notification settings states
+    const [telegramAlerts, setTelegramAlerts] = useState(true)
+    const [dashboardAlerts, setDashboardAlerts] = useState(true)
+    const [emailAlerts, setEmailAlerts] = useState(false)
+    const [twoFactorAuth, setTwoFactorAuth] = useState(false)
+    
+    // Active section state
+    const [activeSection, setActiveSection] = useState<'wallet' | 'risk' | 'notifications'>('wallet')
+    
     const tasks: Task[] = [
         {
             icon: taskWhitePaws.src,
@@ -79,81 +116,335 @@ const TasksTab = () => {
     ]
 
     return (
-        <div className={`quests-tab-con px-4 transition-all duration-300`}>
+        <div className="settings-tab-con px-4 pb-24 transition-all duration-300">
             {/* Header */}
-            <div className="pt-8">
-                <h1 className="text-3xl font-bold mb-2">TASKS</h1>
-                <div>
-                    <span className="text-xl font-semibold">GET REWARDS </span>
-                    <span className="text-xl text-gray-500">FOR</span>
-                </div>
-                <div className="text-xl text-gray-500">COMPLETING QUESTS</div>
+            <div className="pt-8 mb-6">
+                <h1 className="text-2xl font-bold mb-2">Settings</h1>
+                <p className="text-[#868686] text-sm">
+                    Manage your account, risk preferences, and notification settings
+                </p>
             </div>
-
-            {/* Tab Switcher */}
-            <div className="flex gap-0 mt-6">
+            
+            {/* Section Tabs */}
+            <div className="flex gap-0 mb-6">
                 <button
-                    onClick={() => setActiveTab('in-game')}
+                    onClick={() => setActiveSection('wallet')}
                     className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition duration-300 
-                        ${activeTab === 'in-game'
+                        ${activeSection === 'wallet'
                             ? 'bg-white text-black'
                             : 'bg-[#151515] text-white'
                         }`}
                 >
-                    In-game
+                    Wallet & Telegram
                 </button>
                 <button
-                    onClick={() => setActiveTab('partners')}
-                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium flex items-center justify-center gap-2 transition duration-300 
-                        ${activeTab === 'partners'
+                    onClick={() => setActiveSection('risk')}
+                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition duration-300 
+                        ${activeSection === 'risk'
                             ? 'bg-white text-black'
                             : 'bg-[#151515] text-white'
                         }`}
                 >
-                    Partners
-                    <div className="bg-[#5a5a5a] text-[#fefefe] size-4 rounded-full flex items-center justify-center text-[11px]">
-                        1
-                    </div>
+                    Risk Preferences
+                </button>
+                <button
+                    onClick={() => setActiveSection('notifications')}
+                    className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition duration-300 
+                        ${activeSection === 'notifications'
+                            ? 'bg-white text-black'
+                            : 'bg-[#151515] text-white'
+                        }`}
+                >
+                    Notifications
                 </button>
             </div>
-
-            {/* Tasks List */}
-            <div className="mt-4 mb-20 bg-[#151516] rounded-xl">
-                {(activeTab === 'in-game' ? tasks : partnerTasks).map((task, index) => (
-                    <div
-                        key={index}
-                        className="flex items-center"
-                    >
-                        <div className="w-[72px] flex justify-center">  {/* Fixed width container for icons */}
-                            <div className="w-10 h-10">  {/* Fixed size container */}
-                                {typeof task.icon === 'string' ? (
-                                    <Image
-                                        src={task.icon}
-                                        alt={task.title}
-                                        width={40}
-                                        height={40}
-                                        className="w-full h-full object-contain"
-                                    />
-                                ) : (
-                                    <task.icon className="w-full h-full" />
-                                )}
+            
+            {/* Wallet & Telegram Section */}
+            {activeSection === 'wallet' && (
+                <div>
+                    <div className="bg-[#151516] rounded-lg p-4 mb-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="flex items-center gap-3">
+                                <Wallet className="w-6 h-6" />
+                                <span className="font-medium">Wallet Connection</span>
                             </div>
+                            {walletConnected ? (
+                                <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                    Connected
+                                </div>
+                            ) : (
+                                <button 
+                                    onClick={() => setWalletConnected(true)}
+                                    className="bg-[#007aff] text-white px-3 py-1 rounded-full text-sm"
+                                >
+                                    Connect
+                                </button>
+                            )}
                         </div>
-                        <div className={`flex items-center justify-between w-full py-4 pr-4 ${index !== 0 && "border-t border-[#222622]"
-                            }`}>
-                            <div>
-                                <div className="text-[17px]">{task.title}</div>
-                                <div className="text-gray-400 text-[14px]">{task.reward}</div>
+                        
+                        {walletConnected && (
+                            <div className="bg-[#ffffff0d] rounded-lg p-3">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm">Connected Wallet</span>
+                                    <span className="text-sm text-[#868686]">0x71C...93E4</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm">Network</span>
+                                    <span className="text-sm text-[#868686]">Ethereum</span>
+                                </div>
                             </div>
-                            <button className="h-8 bg-white text-black px-4 rounded-full text-sm font-medium flex items-center">
-                                Start
-                            </button>
+                        )}
+                    </div>
+                    
+                    <div className="bg-[#151516] rounded-lg p-4 mb-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <div className="flex items-center gap-3">
+                                <TaskTelegram className="w-6 h-6" />
+                                <span className="font-medium">Telegram Account</span>
+                            </div>
+                            {telegramLinked ? (
+                                <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                                    Linked
+                                </div>
+                            ) : (
+                                <button 
+                                    onClick={() => setTelegramLinked(true)}
+                                    className="bg-[#007aff] text-white px-3 py-1 rounded-full text-sm"
+                                >
+                                    Link
+                                </button>
+                            )}
+                        </div>
+                        
+                        {telegramLinked && (
+                            <div className="bg-[#ffffff0d] rounded-lg p-3">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm">Telegram Username</span>
+                                    <span className="text-sm text-[#868686]">@user_name</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm">Linked On</span>
+                                    <span className="text-sm text-[#868686]">May 15, 2023</span>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {!telegramLinked && (
+                            <div className="bg-[#ffffff0d] rounded-lg p-3">
+                                <p className="text-sm text-[#868686] mb-2">
+                                    Link your Telegram account to receive alerts and manage your liquidity positions.
+                                </p>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 p-1 bg-white rounded-lg">
+                                        <PawsLogo className="w-full h-full text-black" />
+                                    </div>
+                                    <span className="text-sm">Start with /start command in our bot</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="bg-[#ffffff0d] border-[1px] border-[#2d2d2e] rounded-lg p-4 mb-4">
+                        <div className="flex justify-between items-center mb-2">
+                            <div className="flex items-center gap-3">
+                                <Star className="w-6 h-6" />
+                                <span className="font-medium">Supported Wallets</span>
+                            </div>
+                            <ArrowRight className="w-5 h-5 text-gray-400" />
+                        </div>
+                        <p className="text-[#868686] text-sm">
+                            MetaMask, Phantom, WalletConnect, and more
+                        </p>
+                    </div>
+                </div>
+            )}
+            
+            {/* Risk Preferences Section */}
+            {activeSection === 'risk' && (
+                <div>
+                    <div className="bg-[#151516] rounded-lg p-4 mb-4">
+                        <div className="text-lg font-medium mb-3">Auto-Protection Settings</div>
+                        
+                        <div className="flex justify-between items-center mb-3">
+                            <div>
+                                <div className="font-medium">Auto-lock on High Risk</div>
+                                <div className="text-[#868686] text-sm">
+                                    Automatically lock withdrawals during high-risk events
+                                </div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={autoLockEnabled} 
+                                onChange={() => setAutoLockEnabled(!autoLockEnabled)} 
+                            />
+                        </div>
+                        
+                        <div className="bg-[#ffffff0d] rounded-lg p-3">
+                            <div className="flex items-center gap-2 mb-2">
+                                <Image
+                                    src={sparkles}
+                                    alt="sparkles"
+                                    width={16}
+                                    height={16}
+                                />
+                                <span className="text-sm">Auto-protection is powered by AI risk assessment</span>
+                            </div>
                         </div>
                     </div>
-                ))}
+                    
+                    <div className="bg-[#151516] rounded-lg p-4 mb-4">
+                        <div className="text-lg font-medium mb-3">Alert Thresholds</div>
+                        
+                        <div className="flex justify-between items-center mb-3">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div className="font-medium">High Risk Alerts</div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={highRiskAlerts} 
+                                onChange={() => setHighRiskAlerts(!highRiskAlerts)} 
+                            />
+                        </div>
+                        
+                        <div className="flex justify-between items-center mb-3">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div className="font-medium">Medium Risk Alerts</div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={mediumRiskAlerts} 
+                                onChange={() => setMediumRiskAlerts(!mediumRiskAlerts)} 
+                            />
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                <div className="font-medium">Low Risk Alerts</div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={lowRiskAlerts} 
+                                onChange={() => setLowRiskAlerts(!lowRiskAlerts)} 
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="bg-[#ffffff0d] border-[1px] border-[#2d2d2e] rounded-lg p-4 mb-4">
+                        <div className="flex justify-between items-center mb-2">
+                            <div className="flex items-center gap-3">
+                                <Community className="w-6 h-6" />
+                                <span className="font-medium">Insurance Coverage Preferences</span>
+                            </div>
+                            <ArrowRight className="w-5 h-5 text-gray-400" />
+                        </div>
+                        <p className="text-[#868686] text-sm">
+                            Customize your coverage level and premium settings
+                        </p>
+                    </div>
+                </div>
+            )}
+            
+            {/* Notifications Section */}
+            {activeSection === 'notifications' && (
+                <div>
+                    <div className="bg-[#151516] rounded-lg p-4 mb-4">
+                        <div className="text-lg font-medium mb-3">Alert Channels</div>
+                        
+                        <div className="flex justify-between items-center mb-3">
+                            <div>
+                                <div className="font-medium">Telegram Alerts</div>
+                                <div className="text-[#868686] text-sm">
+                                    Receive alerts via Telegram
+                                </div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={telegramAlerts} 
+                                onChange={() => setTelegramAlerts(!telegramAlerts)} 
+                            />
+                        </div>
+                        
+                        <div className="flex justify-between items-center mb-3">
+                            <div>
+                                <div className="font-medium">Dashboard Notifications</div>
+                                <div className="text-[#868686] text-sm">
+                                    Show alerts in dashboard
+                                </div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={dashboardAlerts} 
+                                onChange={() => setDashboardAlerts(!dashboardAlerts)} 
+                            />
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <div className="font-medium">Email Alerts</div>
+                                <div className="text-[#868686] text-sm">
+                                    Receive alerts via email
+                                </div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={emailAlerts} 
+                                onChange={() => setEmailAlerts(!emailAlerts)} 
+                            />
+                        </div>
+                    </div>
+                    
+                    <div className="bg-[#151516] rounded-lg p-4 mb-4">
+                        <div className="text-lg font-medium mb-3">Security Settings</div>
+                        
+                        <div className="flex justify-between items-center mb-3">
+                            <div>
+                                <div className="font-medium">Two-Factor Authentication</div>
+                                <div className="text-[#868686] text-sm">
+                                    Require 2FA for withdrawals
+                                </div>
+                            </div>
+                            <ToggleSwitch 
+                                enabled={twoFactorAuth} 
+                                onChange={() => setTwoFactorAuth(!twoFactorAuth)} 
+                            />
+                        </div>
+                        
+                        {twoFactorAuth && (
+                            <div className="bg-[#ffffff0d] rounded-lg p-3">
+                                <div className="flex items-center gap-2">
+                                    <Image
+                                        src={sparkles}
+                                        alt="sparkles"
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="text-sm">2FA will be required for all withdrawals over $1,000</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="bg-[#ffffff0d] border-[1px] border-[#2d2d2e] rounded-lg p-4 mb-4">
+                        <div className="flex justify-between items-center mb-2">
+                            <div className="flex items-center gap-3">
+                                <Wallet className="w-6 h-6" />
+                                <span className="font-medium">Withdrawal Authentication</span>
+                            </div>
+                            <ArrowRight className="w-5 h-5 text-gray-400" />
+                        </div>
+                        <p className="text-[#868686] text-sm">
+                            Configure additional security for withdrawals
+                        </p>
+                    </div>
+                </div>
+            )}
+            
+            {/* Save Settings Button */}
+            <div className="fixed bottom-[80px] left-0 right-0 py-4 flex justify-center">
+                <div className="w-full max-w-md px-4">
+                    <button className="shine-effect w-full bg-[#4c9ce2] text-white py-4 rounded-xl text-lg font-medium">
+                        Save Settings
+                    </button>
+                </div>
             </div>
         </div>
     )
 }
 
-export default TasksTab
+export default SettingsTab
