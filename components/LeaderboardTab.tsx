@@ -14,6 +14,7 @@ import Image from 'next/image'
 import PawsLogo from '@/icons/PawsLogo'
 import ArrowRight from '@/icons/ArrowRight'
 import { sparkles } from '@/images'
+import ChatWithEliza from './ChatWithEliza'
 
 // Risk level component (reused from HomeTab)
 const RiskIndicator = ({ level }: { level: 'Low' | 'Medium' | 'High' }) => {
@@ -50,7 +51,7 @@ type TVLChange = {
 }
 
 const LiquidityMonitoringTab = () => {
-    const [activeTab, setActiveTab] = useState<'events' | 'tvl'>('events')
+    const [activeTab, setActiveTab] = useState<'events' | 'tvl' | 'chat'>('events')
     
     // Sample liquidity events data
     const liquidityEvents: LiquidityEvent[] = [
@@ -157,6 +158,16 @@ const LiquidityMonitoringTab = () => {
                         >
                             TVL Changes
                         </button>
+                        <button
+                            onClick={() => setActiveTab('chat')}
+                            className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition duration-300 
+                                ${activeTab === 'chat'
+                                    ? 'bg-white text-black'
+                                    : 'bg-[#151515] text-white'
+                                }`}
+                        >
+                            Chat with AI
+                        </button>
                     </div>
                     
                     {/* Events List */}
@@ -221,38 +232,47 @@ const LiquidityMonitoringTab = () => {
                         </div>
                     )}
                     
+                    {/* Chat with Eliza */}
+                    {activeTab === 'chat' && (
+                        <div className="mb-6">
+                            <ChatWithEliza />
+                        </div>
+                    )}
+                    
                     {/* AI Risk Assessment */}
-                    <div className="bg-[#151516] rounded-lg p-4 mb-6">
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="w-8 h-8 p-1.5 bg-white rounded-lg">
-                                <PawsLogo className="w-full h-full text-black" />
+                    {activeTab !== 'chat' && (
+                        <div className="bg-[#151516] rounded-lg p-4 mb-6">
+                            <div className="flex items-center gap-2 mb-3">
+                                <div className="w-8 h-8 p-1.5 bg-white rounded-lg">
+                                    <PawsLogo className="w-full h-full text-black" />
+                                </div>
+                                <div className="text-lg font-medium">AI Risk Assessment</div>
                             </div>
-                            <div className="text-lg font-medium">AI Risk Assessment</div>
+                            <p className="text-[#868686] text-sm mb-3">
+                                Based on current market conditions and historical patterns, our AI predicts:
+                            </p>
+                            <div className="bg-[#ffffff0d] rounded-lg p-3">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <Image
+                                        src={sparkles}
+                                        alt="sparkles"
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="text-sm font-medium">Uniswap V3 may experience increased volatility in the next 24h</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Image
+                                        src={sparkles}
+                                        alt="sparkles"
+                                        width={16}
+                                        height={16}
+                                    />
+                                    <span className="text-sm font-medium">Consider adjusting auto-lock settings for high-risk positions</span>
+                                </div>
+                            </div>
                         </div>
-                        <p className="text-[#868686] text-sm mb-3">
-                            Based on current market conditions and historical patterns, our AI predicts:
-                        </p>
-                        <div className="bg-[#ffffff0d] rounded-lg p-3">
-                            <div className="flex items-center gap-2 mb-1">
-                                <Image
-                                    src={sparkles}
-                                    alt="sparkles"
-                                    width={16}
-                                    height={16}
-                                />
-                                <span className="text-sm font-medium">Uniswap V3 may experience increased volatility in the next 24h</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Image
-                                    src={sparkles}
-                                    alt="sparkles"
-                                    width={16}
-                                    height={16}
-                                />
-                                <span className="text-sm font-medium">Consider adjusting auto-lock settings for high-risk positions</span>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                     
                     {/* Notification Settings */}
                     <div className="bg-[#ffffff0d] border-[1px] border-[#2d2d2e] rounded-lg p-4 mb-6">
@@ -276,6 +296,23 @@ const LiquidityMonitoringTab = () => {
                             </div>
                         </div>
                     </div>
+
+                    <button 
+                        onClick={() => setActiveTab('chat')}
+                        className="shine-effect w-full bg-[#ffffff0d] border-[1px] border-[#2d2d2e] rounded-lg px-4 py-3 flex items-center justify-between mb-3"
+                    >
+                        <div className="flex items-center gap-3 font-medium">
+                            <Image 
+                                src="/images/eliza-logo.png" 
+                                alt="Eliza AI" 
+                                width={24} 
+                                height={24}
+                                className="w-6 h-6 object-contain"
+                            />
+                            <span>Chat with Eliza AI</span>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-gray-400" />
+                    </button>
                 </div>
             </div>
         </div>
