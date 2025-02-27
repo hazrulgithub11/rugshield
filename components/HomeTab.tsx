@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState } from 'react'
@@ -9,6 +8,8 @@ import PawsLogo from '@/icons/PawsLogo'
 import Wallet from '@/icons/Wallet'
 import Star from '@/icons/Star'
 import Community from '@/icons/Community'
+import ConnectWalletButton from './ConnectWalletButton'
+import { useWallet } from '@/contexts/WalletContext'
 
 // Risk level component
 const RiskIndicator = ({ level }: { level: 'Low' | 'Medium' | 'High' }) => {
@@ -60,24 +61,29 @@ const PositionCard = ({
 
 const HomeTab = () => {
     const [showWithdrawOptions, setShowWithdrawOptions] = useState(false)
+    const { isConnected, balance } = useWallet()
+    
+    // Format the balance to display nicely
+    const formattedBalance = isConnected 
+        ? parseFloat(balance).toLocaleString(undefined, { 
+            maximumFractionDigits: 4,
+            minimumFractionDigits: 0
+          })
+        : '0'
     
     return (
         <div className={`dashboard-tab-con transition-all duration-300 px-4`}>
             {/* Header with Connect Wallet */}
             <div className="flex justify-between items-center mt-6">
                 <h1 className="text-2xl font-bold">Dashboard</h1>
-                <button className="bg-[#007aff] text-white px-3 py-1 rounded-full flex items-center gap-2">
-                    <Wallet className="w-4 h-4" />
-                    <span>Connect wallet</span>
-                </button>
+                <ConnectWalletButton />
             </div>
             
             {/* Total Balance */}
             <div className="bg-[#151516] rounded-lg p-4 mt-4">
                 <div className="text-[#868686] text-sm">Total Balance</div>
                 <div className="flex items-center gap-2">
-                    <div className="text-3xl font-bold">4,646</div>
-                    
+                    <div className="text-3xl font-bold">{formattedBalance}</div>
                 </div>
                 <div className="flex items-center gap-1 text-[#868686] text-xs mt-1">
                     <span>INSURANCE COVERAGE:</span>
