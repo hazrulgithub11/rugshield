@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { sparkles } from '@/images'
 
@@ -23,12 +23,38 @@ const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean, onChange: () =>
     )
 }
 
+// Add these types before the component
+type Task = {
+    id: string;
+    amount: number;
+    timeRemaining: string;
+    status: 'In Progress' | 'Approve';
+    proofOfTask?: string;
+}
+
 const ProtectionInsuranceTab = () => {
     const [autoLockEnabled, setAutoLockEnabled] = useState(true)
     const [circuitBreakerEnabled, setCircuitBreakerEnabled] = useState(true)
     const [telegramAlertsEnabled, setTelegramAlertsEnabled] = useState(true)
     const [showRestakeOptions, setShowRestakeOptions] = useState(false)
+    const [ethAmount, setEthAmount] = useState<string>('')
+    const [tasks, setTasks] = useState<Task[]>([])
     
+    const handleExecute = () => {
+        if (!ethAmount || isNaN(Number(ethAmount))) return;
+        
+        const newTask: Task = {
+            id: '1',
+            amount: Number(ethAmount),
+            timeRemaining: '24h remaining',
+            status: 'Approve',
+            proofOfTask: 'QmENBVoqJoY/KbOeJo5g+JN/jVr8vxUvtv69BnkFJGK51'
+        }
+        
+        setTasks([newTask])
+        setEthAmount('')
+    }
+
     return (
         <div className="protection-insurance-tab-con px-4 pb-24 transition-all duration-300">
             {/* Header */}
@@ -186,6 +212,62 @@ const ProtectionInsuranceTab = () => {
                     </div>
                     <ArrowRight className="w-5 h-5 text-gray-400" />
                 </button>
+            </div>
+            
+            {/* Proof of Task Section */}
+            <div className="mb-6">
+                <h2 className="text-lg font-medium mb-3">Proof of Task Execution</h2>
+                
+                <div className="bg-[#151516] rounded-lg p-4 mb-3">
+                    <div className="flex flex-col gap-3">
+                        <div>
+                            <label className="text-sm text-[#868686] mb-2 block">
+                                Enter ETH amount to execute
+                            </label>
+                            <div className="flex gap-2">
+                                <input 
+                                    type="number"
+                                    placeholder="0.0"
+                                    value={ethAmount}
+                                    onChange={(e) => setEthAmount(e.target.value)}
+                                    className="flex-1 bg-[#ffffff0d] border-[1px] border-[#2d2d2e] rounded-lg px-3 py-2 text-white"
+                                    min="0"
+                                />
+                                <button 
+                                    onClick={handleExecute}
+                                    className="bg-[#4c9ce2] px-4 rounded-lg font-medium"
+                                >
+                                    Execute
+                                </button>
+                            </div>
+                        </div>
+
+                        {tasks.length > 0 && (
+                            <div className="bg-[#ffffff0d] rounded-lg p-3">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="text-sm text-[#868686]">Current Tasks</span>
+                                    <span className="text-sm font-medium text-green-500">{tasks.length} Active</span>
+                                </div>
+                                
+                                <div className="space-y-2">
+                                    {tasks.map((task) => (
+                                        <div key={task.id} className="bg-[#151516] rounded-lg p-3">
+                                            <div className="flex justify-between items-center mb-1">
+                                                <span className="font-medium">Task #{task.id}</span>
+                                                <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">
+                                                    {task.status}
+                                                </span>
+                                            </div>
+                                            <div className="text-sm text-[#868686] mt-1">
+                                                Proof of task: {task.proofOfTask}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
             
             {/* Notification Settings */}
