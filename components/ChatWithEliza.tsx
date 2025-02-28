@@ -134,7 +134,7 @@ const ChatWithEliza = () => {
       <div className="flex items-center gap-2 mb-3">
         <div className="w-8 h-8 p-1.5 bg-white rounded-lg">
           <Image 
-            src="/images/eliza-logo.png" 
+            src="/images/shield.png" 
             alt="Eliza AI" 
             width={24} 
             height={24}

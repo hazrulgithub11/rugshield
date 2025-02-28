@@ -1,19 +1,12 @@
-// components/TabContainer.tsx
 
-/**
- * This project was developed by Nikandr Surkov.
- * 
- * YouTube: https://www.youtube.com/@NikandrSurkov
- * GitHub: https://github.com/nikandr-surkov
- */
 
 'use client'
 
 import { useTab } from '@/contexts/TabContext'
 import HomeTab from './HomeTab'
-import LeaderboardTab from './LeaderboardTab'
-import FriendsTab from './FriendsTab'
-import TasksTab from './TasksTab'
+import LeaderboardTab from './liquidityTab'
+import FriendsTab from './ProtectTab'
+import TasksTab from './SettingTab'
 
 const TabContainer = () => {
     const { activeTab } = useTab()

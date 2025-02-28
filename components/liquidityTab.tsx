@@ -1,12 +1,3 @@
-// components/LeaderboardTab.tsx
-
-/**
- * This project was developed by Nikandr Surkov.
- * 
- * YouTube: https://www.youtube.com/@NikandrSurkov
- * GitHub: https://github.com/nikandr-surkov
- */
-
 'use client'
 
 import { useState } from 'react'
@@ -244,7 +235,13 @@ const LiquidityMonitoringTab = () => {
                         <div className="bg-[#151516] rounded-lg p-4 mb-6">
                             <div className="flex items-center gap-2 mb-3">
                                 <div className="w-8 h-8 p-1.5 bg-white rounded-lg">
-                                    <PawsLogo className="w-full h-full text-black" />
+                                    <Image 
+                                        src="/images/shield.png"
+                                        alt="Shield Logo"
+                                        width={24}
+                                        height={24}
+                                        className="w-full h-full object-contain"
+                                    />
                                 </div>
                                 <div className="text-lg font-medium">AI Risk Assessment</div>
                             </div>
@@ -303,7 +300,7 @@ const LiquidityMonitoringTab = () => {
                     >
                         <div className="flex items-center gap-3 font-medium">
                             <Image 
-                                src="/images/eliza-logo.png" 
+                                src="/images/shield.png" 
                                 alt="Eliza AI" 
                                 width={24} 
                                 height={24}

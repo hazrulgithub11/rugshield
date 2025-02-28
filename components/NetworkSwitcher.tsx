@@ -9,22 +9,22 @@ const networks = [
   { 
     id: mainnet.id, 
     name: 'Ethereum', 
-    icon: '/images/ethereum.svg' // Add these icons to your public folder
+    icon: '/images/eth.png' // Add these icons to your public folder
   },
   { 
     id: arbitrum.id, 
     name: 'Arbitrum', 
-    icon: '/images/arbitrum.svg' 
+    icon: '/images/arbitrum.png' 
   },
   { 
     id: optimism.id, 
     name: 'Optimism', 
-    icon: '/images/optimism.svg' 
+    icon: '/images/optimism.png' 
   },
   { 
     id: base.id, 
     name: 'Base', 
-    icon: '/images/base.svg' 
+    icon: '/images/base.png' 
   }
 ];
 

@@ -1,12 +1,3 @@
-// components/TasksTab.tsx
-
-/**
- * This project was developed by Nikandr Surkov.
- * 
- * YouTube: https://www.youtube.com/@NikandrSurkov
- * GitHub: https://github.com/nikandr-surkov
- */
-
 'use client'
 
 import Image, { StaticImageData } from 'next/image'
@@ -236,7 +227,13 @@ const SettingsTab = () => {
                                 </p>
                                 <div className="flex items-center gap-2">
                                     <div className="w-6 h-6 p-1 bg-white rounded-lg">
-                                        <PawsLogo className="w-full h-full text-black" />
+                                        <Image 
+                                            src="/images/shield.png"
+                                            alt="Shield Logo"
+                                            width={16}
+                                            height={16}
+                                            className="w-full h-full object-contain"
+                                        />
                                     </div>
                                     <span className="text-sm">Start with /start command in our bot</span>
                                 </div>
